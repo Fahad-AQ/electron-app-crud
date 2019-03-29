@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ShoppingList</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+</head>
+<body>
+  <nav>
+    <div class="nav-wrapper">
+      <a class="brand-logo center">Shopping List</a>   
+    </div>
+  </nav>
+  <div class="container">
+    <form>
+      <br>
+      <button class="waves-effect waves-light btn" type="submit">Add Item</button>
+    </form>
+    <br>
+    <table>
+       <thead>
+          <tr>
+              <th>Accounts</th>
+              <th>Proxy</th>
+              <th>Created Time</th>
+          </tr>
+       </thead>
+       <tbody>
+
+       </tbody>
+    </table>
+  </div>
+
+  <script>
+    const electron = require('electron');
+    const {ipcRenderer} = electron;
+
+    document.querySelector('form').addEventListener('submit', submitForm);
+
+    function submitForm(e){
+      e.preventDefault();
+      ipcRenderer.send('tab:open');
+    }
+
+    const tbody = document.querySelector('tbody');
+
+    ipcRenderer.on('item:add', function(e, item){
+      console.log(item)
+      tbody.className = 'collection';
+      const td1 = document.createElement('td');
+      const td2 = document.createElement('td');
+      const td3 = document.createElement('td');
+      const tr = document.createElement('tr');
+      tr.className = 'collection-item';
+      const AccountsText = document.createTextNode(item.email);
+      const ProxyText = document.createTextNode(item.proxy);
+      const TimeText = document.createTextNode(item.timeStamp);
+
+      td1.appendChild(AccountsText);
+      td2.appendChild(ProxyText);
+      td3.appendChild(TimeText);
+      tr.appendChild(td1);
+      tr.appendChild(td2);
+      tr.appendChild(td3);
+      tbody.appendChild(tr);
+    });
+
+    ipcRenderer.on('item:clear', function(){
+      tbody.className = '';
+      tbody.innerHTML = '';
+    });
+
+    tbody.addEventListener('dblclick', removeItem);
+
+    function removeItem(e){
+      event.target.remove();
+      if(tbody.children.length == 0){
+        tbody.className = '';
+      }
+    }
+  </script>
+</body>
+</html>

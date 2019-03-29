@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Add Shopping Item</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+</head>
+<body>
+  <div class="container">
+    <form>
+      <div>
+        <label>Enter Email</label>
+        <input type="email" id="email" autofocus>
+      </div>
+      <div>
+        <label>Enter Proxy</label>
+        <input type="text" id="proxy" autofocus>
+      </div>
+      <div>
+        <label>Enter Time</label>
+        <input type="text" id="time" autofocus>
+      </div>
+      <button class="waves-effect waves-light btn" type="submit">Add Item</button>
+    </form>
+  </div>
+
+  <script>
+    const electron = require('electron');
+    const {ipcRenderer} = electron;
+
+    document.querySelector('form').addEventListener('submit', submitForm);
+
+    function submitForm(e){
+      e.preventDefault();
+      const email = document.querySelector('#email').value;
+      const proxy = document.querySelector('#proxy').value;
+      const timeStamp = document.querySelector('#time').value;
+      ipcRenderer.send('item:add', {email:email,proxy:proxy,timeStamp:timeStamp});
+    }
+  </script>
+</body>
+</html>
